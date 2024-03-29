@@ -53,7 +53,8 @@ app.put("/campgrounds/:id", async (req,res)=>{
 });
 
 app.delete("/campgrounds/:id", async (req,res)=>{
-  const campground = await Campground.findByIdAndDelete(req.params.id);
+  const {id} = req.params;
+  const campground = await Campground.findByIdAndDelete(id);
   res.redirect(`/campgrounds`);
 });
 
