@@ -53,6 +53,9 @@
                     <p class="card-text">Review : <%= review.body %></p>
                 </div>
                 
+                <form action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST">
+                    <button class="btn btn-sm btn-danger mb-3 mx-3">Delete</button>
+                </form>
                 
             </div>
             <% } %>
