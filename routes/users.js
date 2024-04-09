@@ -14,30 +14,30 @@ router.post("/register", async (req, res) => {
     const registerUser = await User.register(user, password);
     req.flash("success", "You are registered");
     res.redirect("/campgrounds");
-  }catch (err) {
+  } catch (err) {
     req.flash("error", err.message);
     res.redirect("register");
   }
 
 });
 
-router.get("/login",(req,res)=>{
+router.get("/login", (req, res) => {
   res.render("users/login");
 })
 
-router.post("/login",passport.authenticate("local",{failureFlash:true, failureRedirect : "/login"}) ,(req,res)=>{
-  req.flash("success","Welcome Back!");
+router.post("/login", passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), (req, res) => {
+  req.flash("success", "Welcome Back!");
   res.redirect("/campgrounds");
 })
 
-router.get("/logout",(req,res,next)=>{
-  req.logout( function (err){
-    if(err){
+router.get("/logout", (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
       return next(err);
+    }else{
+    req.flash("success", "you are logged out");
+    res.redirect("/campgrounds");
     }
-    
-  req.flash("success", "you are logged out");
-  res.redirect("/campgrounds");
   });
 })
 
