@@ -6,7 +6,7 @@ const {storeReturnTo} = require("../views/middleware");
 
 router.get("/register", (req, res) => {
   res.render("users/register");
-})
+});
 
 router.post("/register", async (req, res,next) => {
   try {
@@ -27,13 +27,13 @@ router.post("/register", async (req, res,next) => {
 
 router.get("/login", (req, res) => {
   res.render("users/login");
-})
+});
 
 router.post("/login",storeReturnTo, passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), (req, res) => {
   req.flash("success", "Welcome Back!");
   const redirectUrl = res.locals.returnTo || "/campgrounds";
   res.redirect(redirectUrl);
-})
+});
 
 router.get("/logout", (req, res, next) => {
   req.logout(function (err) {
@@ -44,6 +44,6 @@ router.get("/logout", (req, res, next) => {
     res.redirect("/campgrounds");
     }
   });
-})
+});
 
 module.exports = router;
