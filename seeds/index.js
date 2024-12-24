@@ -1,38 +1,64 @@
 const mongoose = require("mongoose");
 const Campground = require("../models/campground");
 const cities = require("./cities");
-const {places, descriptors} = require("./seedHelpers");
+const { places, descriptors } = require("./seedHelpers");
 
-mongoose.connect("mongodb://localhost:27017/yelp-camp")
-
+mongoose.connect("mongodb://localhost:27017/yelp-camp");
 const db = mongoose.connection;
-db.on("error", console.error.bind(console,"connection error: "));
-db.once("open",()=>{
+db.on("error", console.error.bind(console, "connection error: "));
+db.once("open", () => {
   console.log("Database connected");
 });
 
+const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
-const sample = array => array[Math.floor(Math.random() * array.length)];
+const getRandomPhoto = async () => {
+  const accessKey = "gtPXCxr-dFUxgrCtzpq82svfO3Rtmb3qfikKYnPMV18";
+  const collectionId = "483251";
+  try {
+    const response = await fetch(
+      `https://api.unsplash.com/photos/random?collections=${collectionId}`,
+      {
+        headers: {
+          Authorization: `Client-ID ${accessKey}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Failed to fetch a random photo:", response.statusText);
+      return "https://via.placeholder.com/600"; // Fallback image
+    }
+
+    const data = await response.json();
+    return data.urls.full;
+  } catch (error) {
+    console.error("Error fetching photo:", error);
+    return "https://via.placeholder.com/600"; // Fallback image
+  }
+};
 
 const seedDB = async () => {
-   await Campground.deleteMany({});
-   for(let i = 0 ; i < 50; i++)
-   {
+  await Campground.deleteMany({});
+  for (let i = 0; i < 30; i++) {
     const price = Math.floor(Math.random() * 30);
-      let random1000 = Math.floor(Math.random()*1000);
-     const camp = new Campground({
-      location : `${cities[random1000].city}, ${cities[random1000].state}`,
-      title : `${sample(descriptors)} ${sample(places)}`,
-      image : "https://source.unsplash.com/collection/483251",
-      author : "6615015c22f75a1e84321075",
-      price : price,
-      description : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est rerum autem velit, natus ullam facere voluptate atque? Ad ab cumque perspiciatis molestias explicabo in, dolore porro soluta non expedita natus."
-     });
-     await camp.save();
-   }
-}
+    const random1000 = Math.floor(Math.random() * 1000);
+    const image = await getRandomPhoto();
+    const camp = new Campground({
+      location: `${cities[random1000].city}, ${cities[random1000].state}`,
+      title: `${sample(descriptors)} ${sample(places)}`,
+      image: image,
+      author: "6615015c22f75a1e84321075",
+      price: price,
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est rerum autem velit, natus ullam facere voluptate atque? Ad ab cumque perspiciatis molestias explicabo in, dolore porro soluta non expedita natus.",
+    });
+    await camp.save();
+  }
+};
 
-seedDB()
-  .then( () =>{
-    mongoose.connection.close();
-  })
+seedDB().then(() => {
+  mongoose.connection.close();
+});
+
+// Last seeded @ 12: 25
