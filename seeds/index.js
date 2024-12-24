@@ -62,4 +62,4 @@ seedDB().then(() => {
   mongoose.connection.close();
 });
 
-// Last seeded @ 1 : 35
+// Last seeded @ 1 : 40
