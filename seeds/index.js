@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Campground = require("../models/campground");
 const cities = require("./cities");
 const { places, descriptors } = require("./seedHelpers");
+require("dotenv").config();
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp");
 const db = mongoose.connection;
@@ -13,7 +14,7 @@ db.once("open", () => {
 const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
 const getRandomPhoto = async () => {
-  const accessKey = import.meta.env.UNSPLASH_ACCESS_KEY;
+  const accessKey = process.env.UNSPLASH_ACCESS_KEY;
   const collectionId = "483251";
   try {
     const response = await fetch(
@@ -48,7 +49,7 @@ const seedDB = async () => {
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
       title: `${sample(descriptors)} ${sample(places)}`,
       image: image,
-      author: "6615015c22f75a1e84321075",
+      author: "676a64120c16988b1e775ecb",
       price: price,
       description:
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est rerum autem velit, natus ullam facere voluptate atque? Ad ab cumque perspiciatis molestias explicabo in, dolore porro soluta non expedita natus.",
@@ -61,4 +62,4 @@ seedDB().then(() => {
   mongoose.connection.close();
 });
 
-// Last seeded @ 12: 25
+// Last seeded @ 1 : 35
