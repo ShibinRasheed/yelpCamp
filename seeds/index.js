@@ -13,7 +13,7 @@ db.once("open", () => {
 const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
 const getRandomPhoto = async () => {
-  const accessKey = "gtPXCxr-dFUxgrCtzpq82svfO3Rtmb3qfikKYnPMV18";
+  const accessKey = import.meta.env.UNSPLASH_ACCESS_KEY;
   const collectionId = "483251";
   try {
     const response = await fetch(
