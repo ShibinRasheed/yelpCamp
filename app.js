@@ -20,7 +20,11 @@ const Review = require("./models/review");
 const methodOverride = require("method-override");
 const { resourceUsage } = require("process");
 
-mongoose.connect("mongodb://localhost:27017/yelp-camp");
+const MongoStore = require("connect-mongo");
+
+const dbUrl = "mongodb://localhost:27017/yelp-camp";
+
+mongoose.connect(dbUrl);
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error: "));
@@ -35,7 +39,20 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  touchAfter: 24 * 60 * 60,
+  crypto: {
+    secret: "thisshouldbeabettersecret!",
+  },
+});
+
+store.on("error", function (e) {
+  console.log("Session store error", e);
+});
+
 const sessionConfig = {
+  store,
   secret: "thisshouldbeabettersecret!",
   resave: true,
   saveUninitialized: true,
